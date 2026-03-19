@@ -1,97 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Calculator</title>
-    <script src="script.js"></script>
+    <title>Calculator</title>
 
     <style>
         body {
-            margin: 0;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-
-            background-color: #0f0f1a;
-            font-family: Arial, sans-serif;
+            height: 100vh;
+            background: #111;
+            color: white;
+            font-family: Arial;
         }
 
-        .calculator {
-            background: #1a1a2e;
-            padding: 30px;
-            border-radius: 15px;
-
-            /* Neon lavender glow */
+        .box {
+            padding: 20px;
             border: 2px solid #c77dff;
-            box-shadow: 0 0 15px #c77dff, 0 0 30px #9d4edd;
-
+            border-radius: 10px;
+            box-shadow: 0 0 15px #c77dff;
             text-align: center;
-            color: #e0aaff;
-        }
-
-        h2 {
-            margin-bottom: 20px;
         }
 
         input {
-            width: 180px;
-            padding: 10px;
-            margin: 8px;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-
-            background: #2a2a40;
-            color: #fff;
-        }
-
-        input::placeholder {
-            color: #aaa;
+            margin: 5px;
+            padding: 8px;
         }
 
         button {
-            padding: 10px 15px;
             margin: 5px;
-            border: none;
-            border-radius: 8px;
+            padding: 10px;
             cursor: pointer;
-
-            background: #9d4edd;
-            color: white;
-
-            /* Neon effect */
-            box-shadow: 0 0 10px #c77dff;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #c77dff;
-            box-shadow: 0 0 20px #e0aaff;
-        }
-
-        #result {
-            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="calculator">
-        <h2>Simple Calculator</h2>
+    <div class="box">
+        <h2>Calculator</h2>
 
-        <input type="number" id="n1" placeholder="Enter first number" max="100">
-        <input type="number" id="n2" placeholder="Enter second number" max="100">
+        <input type="number" id="n1" placeholder="First number">
+        <input type="number" id="n2" placeholder="Second number">
 
         <br><br>
 
-        <button onclick="calculate('add')">Add</button>
-        <button onclick="calculate('sub')">Subtract</button>
-        <button onclick="calculate('mul')">Multiply</button>
-        <button onclick="calculate('div')">Divide</button>
+        <button onclick="calculate('+')">+</button>
+        <button onclick="calculate('-')">-</button>
+        <button onclick="calculate('*')">*</button>
+        <button onclick="calculate('/')">/</button>
 
-        <h3 id="result">Result: </h3>
+        <h3 id="result">Result:</h3>
     </div>
+
+    <!-- Link JS file HERE (important) -->
+    <script src="script.js"></script>
 
 </body>
 </html>

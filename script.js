@@ -1,35 +1,22 @@
-function calculate(operation){
-
-    let n1 = Number(document.getElementById("n1").value);
-    let n2 = Number(document.getElementById("n2").value);
+function calculate(operator) {
+    let n1 = parseFloat(document.getElementById("n1").value);
+    let n2 = parseFloat(document.getElementById("n2").value);
     let result;
-
-    if (isNaN(n1) || isNaN(n2)) {
-        result = "Please enter valid numbers";
-    }
-    else if (n1 > 100 || n2 > 100) {
-        result = "Number should not be greater than 100";
-    }
-    else if(operation === "add"){
+    if (operator === "+") {
         result = n1 + n2;
-    }
-    else if(operation === "sub"){
+    } else if (operator === "-") {
         result = n1 - n2;
-    }
-    else if(operation === "mul"){
+    } else if (operator === "*") {
         result = n1 * n2;
-    }
-    else if(operation === "div"){
-        if(n2 === 0){
-            result = "Cannot divide by zero";
-        } else {
-            result = n1 / n2;
+    } else if (operator === "/") {
+        if (n2 === 0) {
+            document.getElementById("result").innerHTML = "Cannot divide by zero";
+            return;
         }
-    }
-    else{
-        result = "Invalid operation";
+        result = n1 / n2;
+    } else {
+        result = "Invalid";
     }
 
-    document.getElementById("result").innerText = "Result: " + result;
+    document.getElementById("result").innerHTML = "Result: " + result;
 }
-
