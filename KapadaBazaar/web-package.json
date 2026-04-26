@@ -1,0 +1,28 @@
+{
+  "name": "kapada-thrift-bazaar-web",
+  "version": "1.0.0",
+  "description": "Buy and Sell Fashion Online - Kapda Thrift Bazaar Web Version",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "http-server . -p 8080 -c-1",
+    "start": "http-server . -p 3000 -c-1",
+    "server": "python -m http.server 8000",
+    "preview": "http-server dist -p 4173"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "keywords": [
+    "thrift",
+    "fashion",
+    "marketplace",
+    "kapda",
+    "ecommerce"
+  ],
+  "author": "",
+  "license": "MIT"
+}

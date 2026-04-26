@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Kapda Thrift Bazaar - Buy & Sell Fashion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body, #root {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #F5F5F5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C62828;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B1A1A;
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .nav-logo a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #C62828;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #212121;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            font-size: 1rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #EF9A9A;
+            color: #C62828;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #212121;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .nav-logo a {
+                font-size: 1.2rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 60px);
+                background: white;
+                flex-direction: column;
+                gap: 0;
+                display: none;
+                z-index: 99;
+                overflow-y: auto;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-item {
+                padding: 1rem;
+                border-bottom: 1px solid #f0f0f0;
+                border-radius: 0;
+                width: 100%;
+                text-align: left;
+            }
+
+            .nav-item:hover,
+            .nav-item.active {
+                background: #EF9A9A;
+                color: #C62828;
+            }
+        }
+
+        /* Page Container */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #C62828 0%, #FF8F00 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .featured h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #212121;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-card h3 {
+            margin-bottom: 0.5rem;
+            color: #212121;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            color: #C62828;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #C62828;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #8B1A1A;
+        }
+
+        .btn-secondary {
+            background: #FFC107;
+            color: #212121;
+        }
+
+        .btn-secondary:hover {
+            background: #FF8F00;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            background: #C62828;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-small:hover {
+            background: #8B1A1A;
+        }
+
+        /* Search Page */
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #C62828;
+        }
+
+        /* Form Styles */
+        .sell-form {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #212121;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #C62828;
+        }
+
+        /* Chat Styles */
+        .chats-container {
+            max-width: 600px;
+        }
+
+        .chat-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            background: white;
+            transition: background 0.3s;
+        }
+
+        .chat-item:hover {
+            background: #f5f5f5;
+        }
+
+        .chat-avatar {
+            font-size: 2rem;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: #212121;
+        }
+
+        .chat-info p {
+            margin: 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .chat-time {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Profile Styles */
+        .profile-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            font-size: 4rem;
+        }
+
+        .profile-info h2 {
+            margin: 0;
+            color: #212121;
+        }
+
+        .profile-info p {
+            color: #757575;
+            margin: 0.5rem 0;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #ddd;
+            padding-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat h3 {
+            font-size: 1.5rem;
+            color: #C62828;
+            margin: 0;
+        }
+
+        .stat p {
+            color: #757575;
+            margin: 0.5rem 0 0 0;
+        }
+
+        /* Auth Page */
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+        }
+
+        .auth-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .auth-container h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #C62828;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #757575;
+        }
+
+        .auth-link a {
+            color: #C62828;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: #212121;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            color: #212121;
+        }
+
+        /* Mobile View Optimization */
+        @media (max-width: 480px) {
+            .page-container {
+                padding: 1rem 0.75rem;
+            }
+
+            .hero {
+                padding: 2.5rem 1.5rem;
+                border-radius: 8px;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .product-card {
+                padding: 1rem;
+            }
+
+            .product-image {
+                font-size: 2.5rem;
+            }
+
+            .price {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.65rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-container .btn {
+                width: 100%;
+            }
+
+            .sell-form {
+                max-width: 100%;
+            }
+
+            .chats-container {
+                max-width: 100%;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-info {
+                width: 100%;
+            }
+
+            .auth-container {
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .auth-container h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.65rem;
+                font-size: 16px;
+            }
+
+            .featured h2 {
+                font-size: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Tablet View */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .page-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // Complete Thrift Marketplace App with Login & Shopping
+
+        // Store data
+        const store = {
+            // Thrift clothing items only (no shoes/heels)
+            products: [
+                { id: 1, name: 'Vintage Denim Jacket', price: 899, image: '👕', category: 'Clothing', seller: 'Vintage Hub', description: 'Classic vintage denim jacket. Size M. Perfect condition.', inStock: 5 },
+                { id: 2, name: 'Floral Printed Saree', price: 599, image: '👗', category: 'Clothing', seller: 'Saree Store', description: 'Beautiful floral saree. Traditional wear. Gently used.', inStock: 3 },
+                { id: 3, name: 'Casual Cotton Dress', price: 749, image: '👕', category: 'Clothing', seller: 'Thrift Fashion', description: 'Light cotton dress. Size S. Perfect for summers.', inStock: 8 },
+                { id: 4, name: 'Striped Shirt', price: 449, image: '👔', category: 'Clothing', seller: 'Casual Wear', description: 'Comfortable striped shirt. Size M. Good condition.', inStock: 2 },
+                { id: 5, name: 'Summer Top', price: 349, image: '👕', category: 'Clothing', seller: 'Fashion Thrift', description: 'Light summer top. Size XS. Barely used.', inStock: 4 },
+                { id: 6, name: 'Traditional Kurta', price: 649, image: '👗', category: 'Clothing', seller: 'Ethnic Wear', description: 'Beautiful ethnic kurta. Size M. Like new.', inStock: 6 },
+                { id: 7, name: 'Denim Shorts', price: 399, image: '👖', category: 'Clothing', seller: 'Vintage Store', description: 'Classic denim shorts. Size 28. Great condition.', inStock: 4 },
+                { id: 8, name: 'Floral Blouse', price: 299, image: '👕', category: 'Clothing', seller: 'Thrift Queen', description: 'Colorful floral blouse. Size S. Perfect for casual wear.', inStock: 5 }
+            ],
+            users: [], // Registered users
+            cart: [],
+            orders: [],
+            userListings: [],
+            currentUser: null
+        };
+
+        const app = {
+            currentPage: 'home',
+            currentId: null,
+
+            init() {
+                this.loadFromStorage();
+                this.render();
+                window.addEventListener('hashchange', () => this.routeFromHash());
+                this.checkLoginStatus();
+            },
+
+            loadFromStorage() {
+                const saved = localStorage.getItem('kapadaBazaar');
+                if (saved) {
+                    try {
+                        Object.assign(store, JSON.parse(saved));
+                    } catch(e) {
+                        console.error('Error loading:', e);
+                    }
+                }
+            },
+
+            saveToStorage() {
+                localStorage.setItem('kapadaBazaar', JSON.stringify(store));
+            },
+
+            checkLoginStatus() {
+                // If not logged in, show login page
+                if (!store.currentUser) {
+                    this.navigateTo('login');
+                } else {
+                    this.routeFromHash();
+                }
+            },
+
+            routeFromHash() {
+                const hash = window.location.hash.slice(1) || '/home';
+                const parts = hash.split('/');
+                const page = parts[1] || 'home';
+                const id = parts[2] || null;
+                this.navigateTo(page, id);
+            },
+
+            navigateTo(page, id = null) {
+                this.currentPage = page;
+                this.currentId = id;
+                window.location.hash = id ? `#/${page}/${id}` : `#/${page}`;
+                this.updateContent();
+                this.closeMenu();
+            },
+
+            toggleMenu() {
+                const hamburger = document.getElementById('hamburger');
+                const navLinks = document.getElementById('nav-links');
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            },
+
+            closeMenu() {
+                const hamburger = document.getElementById('hamburger');
+                const navLinks = document.getElementById('nav-links');
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            },
+
+            render() {
+                const root = document.getElementById('root');
+                const cartCount = store.cart.length;
+                const userName = store.currentUser ? store.currentUser.name : 'Guest';
+                
+                root.innerHTML = `
+                    <nav class="navigation">
+                        <div class="nav-container">
+                            <div class="nav-logo">
+                                <a onclick="app.navigateTo('home')">👗 Kapda Bazaar</a>
+                            </div>
+                            <button class="hamburger" id="hamburger" onclick="app.toggleMenu()">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                            <div class="nav-links" id="nav-links">
+                                <button class="nav-item" onclick="app.navigateTo('home')">🏠 Home</button>
+                                <button class="nav-item" onclick="app.navigateTo('browse')">👗 Browse</button>
+                                <button class="nav-item" onclick="app.navigateTo('sell')">➕ Sell</button>
+                                <button class="nav-item" onclick="app.navigateTo('cart')">🛒 Cart ${cartCount > 0 ? `(${cartCount})` : ''}</button>
+                                <button class="nav-item" onclick="app.navigateTo('orders')">📦 Orders</button>
+                                <button class="nav-item" onclick="app.navigateTo('profile')">👤 ${userName}</button>
+                                <button class="nav-item" onclick="app.logout()">🚪 Logout</button>
+                            </div>
+                        </div>
+                    </nav>
+                    <main id="main-content"></main>
+                `;
+            },
+
+            updateContent() {
+                const main = document.getElementById('main-content');
+                const pages = {
+                    home: this.getHomePage(),
+                    browse: this.getBrowsePage(),
+                    product: this.getProductPage(),
+                    sell: this.getSellPage(),
+                    cart: this.getCartPage(),
+                    checkout: this.getCheckoutPage(),
+                    orders: this.getOrdersPage(),
+                    profile: this.getProfilePage(),
+                    login: this.getLoginPage(),
+                    register: this.getRegisterPage(),
+                };
+                main.innerHTML = pages[this.currentPage] || pages.home;
+            },
+
+            // PAGE GENERATORS
+            getHomePage() {
+                return `
+                    <div class="page-container">
+                        <section class="hero">
+                            <h1>Welcome to Kapda Thrift Bazaar</h1>
+                            <p>Buy & Sell Traditional & Thrift Fashion</p>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">Authentic vintage clothes • Sarees • Kurtis • Traditional wear</p>
+                            <div class="hero-buttons">
+                                <button class="btn btn-primary" onclick="app.navigateTo('browse')">Shop Now</button>
+                                <button class="btn btn-secondary" onclick="app.navigateTo('sell')">Sell Your Clothes</button>
+                            </div>
+                        </section>
+
+                        <section style="margin-top: 3rem;">
+                            <h2>Featured Thrift Items</h2>
+                            <div class="products-grid">
+                                ${store.products.slice(0, 4).map(p => `
+                                    <div class="product-card">
+                                        <div class="product-image">${p.image}</div>
+                                        <h3>${p.name}</h3>
+                                        <p class="seller-name">by ${p.seller}</p>
+                                        <p class="price">₹${p.price}</p>
+                                        <button class="btn btn-small btn-primary" onclick="app.navigateTo('product', ${p.id})">View</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    </div>
+                `;
+            },
+
+            getBrowsePage() {
+                return `
+                    <div class="page-container">
+                        <h1>Browse All Thrift Clothes</h1>
+                        <div class="filter-section">
+                            <input type="text" id="searchInput" placeholder="Search items..." class="search-input" onkeyup="app.filterProducts()">
+                        </div>
+                        <div class="products-grid" id="productsGrid">
+                            ${store.products.map(p => `
+                                <div class="product-card">
+                                    <div class="product-image">${p.image}</div>
+                                    <h3>${p.name}</h3>
+                                    <p class="seller-name">by ${p.seller}</p>
+                                    <p class="price">₹${p.price}</p>
+                                    <p class="stock">${p.inStock} available</p>
+                                    <button class="btn btn-small btn-primary" onclick="app.navigateTo('product', ${p.id})">View Details</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            getProductPage() {
+                const product = store.products.find(p => p.id == this.currentId);
+                if (!product) return '<div class="page-container"><p>Product not found</p></div>';
+                
+                return `
+                    <div class="page-container">
+                        <button class="btn btn-secondary" onclick="app.navigateTo('browse')">← Back</button>
+                        
+                        <div class="product-detail">
+                            <div class="product-details-container">
+                                <div class="product-image-large">${product.image}</div>
+                                <div class="product-info">
+                                    <h1>${product.name}</h1>
+                                    <p class="seller-info">Seller: <strong>${product.seller}</strong></p>
+                                    <p class="description">${product.description}</p>
+                                    <p class="stock">${product.inStock} in stock</p>
+                                    
+                                    <div class="price-section">
+                                        <p class="price-label">Price</p>
+                                        <p class="price-large">₹${product.price}</p>
+                                    </div>
+
+                                    <div class="quantity-selector">
+                                        <label>Quantity</label>
+                                        <div class="qty-control">
+                                            <button class="qty-btn" onclick="app.decreaseQty()">−</button>
+                                            <input type="number" id="qtyInput" value="1" min="1" max="${product.inStock}">
+                                            <button class="qty-btn" onclick="app.increaseQty()">+</button>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem;" onclick="app.addToCart(${product.id})">
+                                        🛒 Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            getSellPage() {
+                return `
+                    <div class="page-container">
+                        <h1>Sell Your Thrift Clothes</h1>
+                        <form style="max-width: 600px; background: white; padding: 2rem; border-radius: 12px;" onsubmit="app.submitListing(event)">
+                            <div class="form-group">
+                                <label>Item Name</label>
+                                <input type="text" id="productTitle" placeholder="e.g., Vintage Saree Blue" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="productDesc" placeholder="Condition, size, material, etc." rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Price (₹)</label>
+                                <input type="number" id="productPrice" placeholder="Enter price" min="50" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Available Quantity</label>
+                                <input type="number" id="productStock" value="1" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">✅ List Item</button>
+                        </form>
+                    </div>
+                `;
+            },
+
+            getCartPage() {
+                if (store.cart.length === 0) {
+                    return `
+                        <div class="page-container">
+                            <h1>Shopping Cart</h1>
+                            <div class="empty-state">
+                                <p>Cart is empty</p>
+                                <button class="btn btn-primary" onclick="app.navigateTo('browse')">Continue Shopping</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const total = store.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                return `
+                    <div class="page-container">
+                        <h1>Shopping Cart</h1>
+                        <div class="cart-items">
+                            ${store.cart.map((item, idx) => `
+                                <div class="cart-item">
+                                    <div class="cart-item-image">${item.image}</div>
+                                    <div class="cart-item-info">
+                                        <h3>${item.name}</h3>
+                                        <p class="seller">by ${item.seller}</p>
+                                        <p>₹${item.price} × ${item.quantity} = ₹${item.price * item.quantity}</p>
+                                    </div>
+                                    <button class="btn-remove" onclick="app.removeFromCart(${idx})">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span>₹${total}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Delivery</span>
+                                <span>₹50</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span>₹${total + 50}</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem;" onclick="app.navigateTo('checkout')">
+                                Checkout
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            getCheckoutPage() {
+                return `
+                    <div class="page-container">
+                        <h1>Checkout</h1>
+                        <form style="max-width: 600px; background: white; padding: 2rem; border-radius: 12px;" onsubmit="app.completeOrder(event)">
+                            <h2>Delivery Address</h2>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" placeholder="10-digit number" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea placeholder="Street address" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" placeholder="City name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Postal Code</label>
+                                <input type="text" placeholder="6-digit code" required>
+                            </div>
+
+                            <h2>Payment</h2>
+                            <div class="payment-options">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="cod" checked>
+                                    <span>💵 Cash on Delivery</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="card">
+                                    <span>💳 Debit/Credit Card</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-top: 1.5rem;">Place Order</button>
+                        </form>
+                    </div>
+                `;
+            },
+
+            getOrdersPage() {
+                if (store.orders.length === 0) {
+                    return `
+                        <div class="page-container">
+                            <h1>My Orders</h1>
+                            <div class="empty-state">
+                                <p>No orders yet</p>
+                                <button class="btn btn-primary" onclick="app.navigateTo('browse')">Start Shopping</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="page-container">
+                        <h1>My Orders</h1>
+                        ${store.orders.map((order, idx) => `
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <h3>Order #${1000 + idx}</h3>
+                                    <span class="order-status">${order.status}</span>
+                                </div>
+                                <p class="order-date">${order.date}</p>
+                                <p class="order-total">₹${order.total}</p>
+                                <div class="order-items">
+                                    ${order.items.map(item => `<p>• ${item.name} × ${item.quantity}</p>`).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            getProfilePage() {
+                return `
+                    <div class="page-container">
+                        <h1>My Profile</h1>
+                        <div class="profile-container">
+                            <div class="profile-header">
+                                <div class="profile-avatar">👤</div>
+                                <div class="profile-info">
+                                    <h2>${store.currentUser.name}</h2>
+                                    <p>${store.currentUser.email}</p>
+                                </div>
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <h3>${store.userListings.length}</h3>
+                                    <p>Items Listed</p>
+                                </div>
+                                <div class="stat">
+                                    <h3>${store.orders.length}</h3>
+                                    <p>Orders</p>
+                                </div>
+                            </div>
+
+                            <h2>My Listings</h2>
+                            ${store.userListings.length === 0 ? `
+                                <p>No items listed yet</p>
+                                <button class="btn btn-primary" onclick="app.navigateTo('sell')">Sell Now</button>
+                            ` : `
+                                <div class="products-grid">
+                                    ${store.userListings.map(item => `
+                                        <div class="product-card">
+                                            <div class="product-image">👕</div>
+                                            <h3>${item.title}</h3>
+                                            <p>₹${item.price}</p>
+                                            <p class="stock">${item.stock} available</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            },
+
+            getLoginPage() {
+                return `
+                    <div class="page-container auth-page">
+                        <div class="auth-container">
+                            <h1>Login to Kapda Bazaar</h1>
+                            <form onsubmit="app.login(event)">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="loginPassword" placeholder="Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+                                <p class="auth-link">New user? <a onclick="app.navigateTo('register')">Register here</a></p>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            },
+
+            getRegisterPage() {
+                return `
+                    <div class="page-container auth-page">
+                        <div class="auth-container">
+                            <h1>Register</h1>
+                            <form onsubmit="app.register(event)">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="regName" placeholder="Your name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="regEmail" placeholder="your@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="regPassword" placeholder="Choose a password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Create Account</button>
+                                <p class="auth-link">Already have account? <a onclick="app.navigateTo('login')">Login</a></p>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // METHODS
+            filterProducts() {
+                const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+                const filtered = store.products.filter(p => p.name.toLowerCase().includes(searchTerm));
+
+                const grid = document.getElementById('productsGrid');
+                if (grid) {
+                    grid.innerHTML = filtered.length === 0 ? '<p>No items found</p>' : filtered.map(p => `
+                        <div class="product-card">
+                            <div class="product-image">${p.image}</div>
+                            <h3>${p.name}</h3>
+                            <p class="seller-name">by ${p.seller}</p>
+                            <p class="price">₹${p.price}</p>
+                            <p class="stock">${p.inStock} available</p>
+                            <button class="btn btn-small btn-primary" onclick="app.navigateTo('product', ${p.id})">View Details</button>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            addToCart(productId) {
+                const product = store.products.find(p => p.id === productId);
+                const qtyInput = document.getElementById('qtyInput');
+                const quantity = qtyInput ? parseInt(qtyInput.value) : 1;
+                
+                if (product && quantity > 0) {
+                    const existing = store.cart.find(item => item.id === productId);
+                    if (existing) {
+                        existing.quantity += quantity;
+                    } else {
+                        store.cart.push({ ...product, quantity });
+                    }
+                    this.saveToStorage();
+                    alert(`✅ Added ${quantity} × ${product.name}`);
+                    this.render();
+                    this.navigateTo('cart');
+                }
+            },
+
+            removeFromCart(index) {
+                store.cart.splice(index, 1);
+                this.saveToStorage();
+                this.render();
+                this.updateContent();
+            },
+
+            increaseQty() {
+                const input = document.getElementById('qtyInput');
+                if (input) input.value = parseInt(input.value) + 1;
+            },
+
+            decreaseQty() {
+                const input = document.getElementById('qtyInput');
+                if (input && parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+            },
+
+            submitListing(event) {
+                event.preventDefault();
+                const title = document.getElementById('productTitle').value;
+                const desc = document.getElementById('productDesc').value;
+                const price = parseFloat(document.getElementById('productPrice').value);
+                const stock = parseInt(document.getElementById('productStock').value);
+
+                store.userListings.push({
+                    id: Date.now(),
+                    title,
+                    description: desc,
+                    price,
+                    stock,
+                    seller: store.currentUser.name,
+                    date: new Date().toLocaleDateString()
+                });
+
+                this.saveToStorage();
+                alert('✅ Item listed successfully!');
+                this.navigateTo('profile');
+            },
+
+            completeOrder(event) {
+                event.preventDefault();
+                const total = store.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 50;
+                
+                store.orders.push({
+                    items: store.cart,
+                    total,
+                    status: 'Processing',
+                    date: new Date().toLocaleDateString()
+                });
+
+                store.cart = [];
+                this.saveToStorage();
+                alert('✅ Order placed! Order #' + (1000 + store.orders.length - 1));
+                this.render();
+                this.navigateTo('orders');
+            },
+
+            login(event) {
+                event.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const user = store.users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    store.currentUser = user;
+                    this.saveToStorage();
+                    this.render();
+                    this.navigateTo('browse');
+                } else {
+                    alert('❌ Invalid email or password');
+                }
+            },
+
+            register(event) {
+                event.preventDefault();
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+
+                if (store.users.find(u => u.email === email)) {
+                    alert('❌ Email already registered');
+                    return;
+                }
+
+                const newUser = { name, email, password };
+                store.users.push(newUser);
+                store.currentUser = newUser;
+                this.saveToStorage();
+                this.render();
+                this.navigateTo('browse');
+                alert('✅ Account created!');
+            },
+
+            logout() {
+                if (confirm('Logout?')) {
+                    store.currentUser = null;
+                    this.saveToStorage();
+                    this.render();
+                    this.navigateTo('login');
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+    </script>
+</body>
+</html>
